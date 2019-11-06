@@ -10,7 +10,7 @@ public class Config {
         FileInputStream fileInputStream = null;
         String value = null;
         try{
-            fileInputStream = new FileInputStream(new File("src/main/resources/config.properties"));
+            fileInputStream = new FileInputStream(new File("NettyServer/src/main/resources/config.properties"));
             Properties properties = new Properties();
             properties.load(fileInputStream);
             Enumeration em = properties.propertyNames();
