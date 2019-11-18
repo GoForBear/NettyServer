@@ -25,7 +25,7 @@ public class JedisPoolBuildPool {
             config.setMaxWaitMillis(1000 * 10);
             //对redis的连接做有效测试，保证都是有用的连接
             config.setTestOnBorrow(true);
-            pool = new JedisPool(config,"127.0.0.1",6379,10000);
+            pool = new JedisPool(config,Config.REDIS_SERVER_IP,Config.REDIS_SERVER_PORT,10000);
         }
         return pool;
     }

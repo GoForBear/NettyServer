@@ -31,4 +31,6 @@ public class Config {
     public static String SOCKET_SERVER_IP = Config.getValue("SOCKET_SERVER_IP") ;
     public static int SOCKET_SERVER_PORT = Integer.parseInt(Config.getValue("SOCKET_SERVER_PORT")) ;
     public static int capacity = Integer.parseInt(Config.getValue("capacity"));
+    public static String REDIS_SERVER_IP = Config.getValue("REDIS_SERVER_IP") ;
+    public static int REDIS_SERVER_PORT = Integer.parseInt(Config.getValue("REDIS_SERVER_PORT")) ;
 }
