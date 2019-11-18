@@ -14,7 +14,7 @@ public class Server {
     private static ServerBootstrap serverBootstrap = new ServerBootstrap();
 
 
-    private static void run(){
+    public void run(){
         EventLoopGroup bossGroup  = new NioEventLoopGroup(1);
         EventLoopGroup workGroup = new NioEventLoopGroup();
         try{
@@ -26,33 +26,23 @@ public class Server {
             serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) {
-                    System.out.println("练到了");
                     socketChannel.pipeline().addLast(loginHandler.instance);
                 }
             });
-            System.out.println("来了?");
+
             ChannelFuture channelFuture = serverBootstrap.bind().sync();
             System.out.println("服务器启动成功");
             ChannelFuture closeCahnnel = channelFuture.channel().closeFuture();
             closeCahnnel.sync();
 
-
-
-
         }catch (Exception e){
-
+            System.out.println("服务器启动出现异常");
+            e.printStackTrace();
         }finally {
-
+            bossGroup.shutdownGracefully();
+            workGroup.shutdownGracefully();
         }
-        return ;
-    }
-
-    public static void main(String[] args) {
-        Server server = new Server();
-
-        server.run();
-
-
 
     }
+
 }

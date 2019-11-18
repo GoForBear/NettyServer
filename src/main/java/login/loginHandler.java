@@ -1,32 +1,54 @@
 package login;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import redis.clients.jedis.Jedis;
+import task.CallBackTask;
+import task.CallBackTaskThread;
+import util.JedisPoolBuildPool;
+
+import java.nio.ByteBuffer;
 
 public class loginHandler extends ChannelInboundHandlerAdapter {
     public static final loginHandler instance = new loginHandler();
 
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf byteBuf = (ByteBuf) msg;
-        int len = byteBuf.readableBytes();
-        byte[] arr = new byte[len];
-        byteBuf.getBytes(0,arr);
-        System.out.println("server is:" + new String(arr,"UTF-8"));
+        if(null == msg){
+            super.channelRead(ctx,msg);
+            return;
+        }
 
-        ChannelFuture channelFuture = ctx.writeAndFlush(msg);
-        channelFuture.addListener(new ChannelFutureListener() {
+        CallBackTaskThread.add(new CallBackTask<Boolean>() {
             @Override
-            public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                if(channelFuture.isSuccess()){
-                    System.out.println("写回成功");
-                }else{
-                    System.out.println("写回失败");
+            public Boolean execute() {
+                System.out.println("发送登录信息");
+                boolean login = LoginProcess.loginVerified(ctx,msg);
+                return login;
+            }
+
+            @Override
+            public void onBack(Boolean aBoolean) {
+                if(aBoolean){
+                    ctx.pipeline().remove(loginHandler.instance);
+                    System.out.println("登录成功");
                 }
+
+            }
+
+            @Override
+            public void onException(Throwable t) {
+                System.out.println("登录异常");
             }
         });
+
+
+
+
     }
 }
